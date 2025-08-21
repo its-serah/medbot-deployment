@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  medbot:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - FLASK_ENV=development
+      - PORT=8080
+      - HOST=0.0.0.0
+    volumes:
+      # Mount models directory for easier development
+      - ./models:/app/models:ro
+      # Optional: mount for development (uncomment for live reloading)
+      # - ./app.py:/app/app.py:ro
+      # - ./model.py:/app/model.py:ro
+      # - ./templates:/app/templates:ro
+      # - ./static:/app/static:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

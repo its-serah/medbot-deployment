@@ -1,0 +1,19 @@
+{
+  "_name_or_path": "microsoft/DialoGPT-medium",
+  "model_type": "gpt2",
+  "vocab_size": 50257,
+  "n_positions": 1024,
+  "n_embd": 1024,
+  "n_layer": 24,
+  "n_head": 16,
+  "activation_function": "gelu_new",
+  "resid_pdrop": 0.1,
+  "embd_pdrop": 0.1,
+  "attn_pdrop": 0.1,
+  "layer_norm_epsilon": 1e-05,
+  "initializer_range": 0.02,
+  "use_cache": true,
+  "bos_token_id": 50256,
+  "eos_token_id": 50256,
+  "pad_token_id": 50256
+}

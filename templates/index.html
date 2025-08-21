@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedBot - AI Medical Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-stethoscope"></i>
+                    <h1>MedBot</h1>
+                </div>
+                <p class="subtitle">AI-Powered Medical Assistant</p>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span>MedBot is online</span>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hello! I'm MedBot, your AI medical assistant. I can help answer general medical questions and provide health information.</p>
+                        <p><strong>⚠️ Important Disclaimer:</strong> I am not a substitute for professional medical advice. Always consult with qualified healthcare professionals for medical diagnosis and treatment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <form class="input-form" id="questionForm">
+                    <div class="input-group">
+                        <textarea 
+                            id="questionInput" 
+                            placeholder="Ask me a medical question..." 
+                            rows="1"
+                            maxlength="1000"
+                        ></textarea>
+                        <button type="submit" id="sendButton" class="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-footer">
+                        <small class="char-counter">
+                            <span id="charCount">0</span>/1000 characters
+                        </small>
+                        <small class="disclaimer">
+                            For medical emergencies, call emergency services immediately
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>MedBot is thinking...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
+                <button class="modal-close" onclick="closeErrorModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeErrorModal()" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

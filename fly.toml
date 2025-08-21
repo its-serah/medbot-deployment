@@ -1,0 +1,40 @@
+app = "medbot-ai"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  FLASK_ENV = "production"
+  HOST = "0.0.0.0"
+
+[[services]]
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+
+  [[services.http_checks]]
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    protocol = "http"
+    timeout = "5s"
+    tls_skip_verify = false
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+[checks]
+  [checks.medbot_health]
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    port = 8080
+    timeout = "5s"
+    type = "http"
