@@ -177,15 +177,41 @@ class MedBotModel:
     def _setup_fallback(self):
         """Setup fallback rule-based responses."""
         self.knowledge_base = {
-            "diabetes": "Diabetes is a chronic condition that affects how your body processes blood sugar (glucose). There are two main types: Type 1 (autoimmune) and Type 2 (insulin resistance). Management typically involves medication, diet, and lifestyle changes. Please consult with a healthcare provider for personalized advice.",
+            # Common conditions
+            "diabetes": "Diabetes is a chronic condition affecting blood sugar regulation. Type 1 is autoimmune; Type 2 involves insulin resistance. Management includes medication, diet modifications, regular exercise, and blood sugar monitoring. Consult your healthcare provider for personalized treatment plans.",
             
-            "hypertension": "High blood pressure (hypertension) occurs when the force of blood against artery walls is consistently too high. It can be managed through lifestyle changes like diet, exercise, stress management, and medication when necessary. Regular monitoring is important.",
+            "hypertension": "High blood pressure occurs when blood pushes against artery walls with excessive force. Management often includes dietary changes (reducing sodium), regular exercise, stress management, and medications as prescribed. Regular monitoring is essential for cardiovascular health.",
             
-            "asthma": "Asthma is a respiratory condition causing inflammation and narrowing of airways, leading to breathing difficulties. Common triggers include allergens, exercise, and stress. Treatment typically involves inhalers and avoiding known triggers.",
+            "blood pressure": "Blood pressure measures the force of blood against artery walls. Normal range is typically below 120/80 mmHg. High blood pressure can be managed through lifestyle changes and medication. Regular monitoring and medical supervision are important.",
             
-            "covid": "COVID-19 is caused by the SARS-CoV-2 virus. Symptoms can range from mild to severe. Prevention includes vaccination, masking, and good hygiene. Consult healthcare providers for current guidelines and treatment options.",
+            "asthma": "Asthma causes airway inflammation and breathing difficulties. Common triggers include allergens, exercise, cold air, and stress. Treatment typically involves rescue inhalers for acute symptoms and controller medications for long-term management. Work with your doctor to identify triggers.",
             
-            "heart": "Heart conditions can vary widely. Common issues include coronary artery disease, heart failure, and arrhythmias. Maintaining a healthy lifestyle with regular exercise, proper diet, and regular check-ups is important for heart health."
+            "covid": "COVID-19 is caused by SARS-CoV-2 virus. Symptoms range from mild cold-like symptoms to severe respiratory illness. Prevention includes vaccination, masking in crowded areas, and good hand hygiene. Contact healthcare providers for current testing and treatment guidance.",
+            
+            "heart": "Heart health is crucial for overall wellbeing. Common concerns include coronary artery disease, heart failure, and arrhythmias. Maintaining heart health involves regular exercise, balanced diet, not smoking, and managing stress. Regular check-ups can help detect issues early.",
+            
+            # Symptoms
+            "headache": "Headaches can have various causes including tension, dehydration, stress, or underlying conditions. Most are benign but persistent, severe, or sudden headaches should be evaluated by a healthcare provider, especially if accompanied by other symptoms.",
+            
+            "fever": "Fever is the body's natural response to infection. For adults, temperatures above 100.4°F (38°C) are considered fever. Stay hydrated, rest, and consider fever-reducing medications if appropriate. Seek medical care for high fever or concerning symptoms.",
+            
+            "cough": "Coughs can result from infections, allergies, asthma, or other conditions. Dry coughs may benefit from honey or throat lozenges. Persistent coughs lasting more than 3 weeks, bloody cough, or cough with breathing difficulties warrant medical evaluation.",
+            
+            "pain": "Pain is a signal that something needs attention. Acute pain often resolves with rest, ice/heat, or over-the-counter pain relievers. Chronic or severe pain should be evaluated by healthcare professionals for proper diagnosis and treatment.",
+            
+            # General health
+            "nutrition": "A balanced diet includes fruits, vegetables, whole grains, lean proteins, and healthy fats. Proper nutrition supports immune function, energy levels, and overall health. Consider consulting a registered dietitian for personalized nutrition advice.",
+            
+            "exercise": "Regular physical activity benefits cardiovascular health, mental wellbeing, and overall fitness. Adults should aim for at least 150 minutes of moderate exercise weekly. Start slowly and gradually increase intensity. Consult your doctor before starting new exercise routines.",
+            
+            "sleep": "Quality sleep is essential for health. Adults typically need 7-9 hours nightly. Good sleep hygiene includes consistent bedtime, limiting screens before bed, and creating a comfortable sleep environment. Persistent sleep issues may require medical evaluation.",
+            
+            "stress": "Chronic stress can impact physical and mental health. Management techniques include regular exercise, meditation, deep breathing, and maintaining social connections. If stress becomes overwhelming, consider speaking with a mental health professional.",
+            
+            # Medications
+            "medication": "Medications should be taken exactly as prescribed by your healthcare provider. Never stop medications abruptly without medical guidance. Keep an updated list of all medications and discuss any concerns or side effects with your doctor or pharmacist.",
+            
+            "side effects": "Medication side effects vary by individual and drug. Common side effects are usually listed on medication labels. Report any concerning or unexpected side effects to your healthcare provider promptly. Never stop medications without medical consultation."
         }
     
     def generate_response(self, question: str) -> str:
@@ -255,7 +281,34 @@ Answer:"""
         # Search for keywords in the knowledge base
         for condition, response in self.knowledge_base.items():
             if condition in question_lower:
-                return response
+                return f"{response}\n\n**Please consult with a healthcare professional for personalized medical advice.**"
+        
+        # Check for common variations and synonyms
+        keyword_map = {
+            "sugar": "diabetes",
+            "blood sugar": "diabetes",
+            "bp": "blood pressure", 
+            "hypertension": "blood pressure",
+            "corona": "covid",
+            "coronavirus": "covid",
+            "breathing": "asthma",
+            "chest pain": "heart",
+            "heart attack": "heart",
+            "migraine": "headache",
+            "flu": "fever",
+            "cold": "cough",
+            "diet": "nutrition",
+            "workout": "exercise",
+            "insomnia": "sleep",
+            "anxiety": "stress",
+            "medicine": "medication",
+            "drug": "medication"
+        }
+        
+        for keyword, mapped_condition in keyword_map.items():
+            if keyword in question_lower and mapped_condition in self.knowledge_base:
+                response = self.knowledge_base[mapped_condition]
+                return f"{response}\n\n**Please consult with a healthcare professional for personalized medical advice.**"
         
         # Generic fallback response
         return """I understand you have a medical question, but I don't have specific information about this topic in my current knowledge base. 
