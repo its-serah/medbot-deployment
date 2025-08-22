@@ -100,4 +100,5 @@ if __name__ == '__main__':
     host = os.environ.get('HOST', '0.0.0.0')
     
     logger.info(f"Starting MedBot on {host}:{port}")
+    logger.info("MedBot deployment ready")
     app.run(host=host, port=port, debug=False)
