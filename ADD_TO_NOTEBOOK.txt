@@ -1,0 +1,109 @@
+# ADD THESE 4 CODE CELLS TO THE END OF YOUR TRAINING NOTEBOOK
+# Copy each cell and paste them as new code cells in Google Colab
+
+# ============= CELL 1: SAVE MODEL =============
+# Save your fine-tuned model and tokenizer
+print("🔄 Saving your trained MedBot model...")
+
+# Save the model
+model.save_pretrained("./medbot_model")
+tokenizer.save_pretrained("./medbot_model")
+
+print("✅ Model saved to ./medbot_model/")
+
+# List the saved files
+import os
+print("\n📁 Saved model files:")
+total_size = 0
+for file in os.listdir("./medbot_model"):
+    file_path = f"./medbot_model/{file}"
+    if os.path.isfile(file_path):
+        size = os.path.getsize(file_path) / (1024*1024)  # Size in MB
+        total_size += size
+        print(f"  {file} - {size:.1f} MB")
+
+print(f"\n📊 Total model size: {total_size:.1f} MB")
+
+
+# ============= CELL 2: CREATE ZIP =============
+# Create a ZIP file of your model for easy download
+import zipfile
+import os
+
+print("📦 Creating ZIP file for download...")
+
+def create_model_zip():
+    zip_filename = "medbot_trained_model.zip"
+    
+    with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        # Add all files from medbot_model directory
+        for root, dirs, files in os.walk("./medbot_model"):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arc_path = os.path.relpath(file_path, ".")
+                zipf.write(file_path, arc_path)
+                print(f"  Added: {file}")
+    
+    print(f"✅ Created {zip_filename}")
+    return zip_filename
+
+zip_file = create_model_zip()
+
+# Show file size
+zip_size = os.path.getsize(zip_file) / (1024*1024)
+print(f"📊 ZIP file size: {zip_size:.1f} MB")
+
+
+# ============= CELL 3: TEST MODEL =============
+# Test your model to make sure it works before download
+print("🧪 Testing your trained model...")
+
+import torch
+
+# Test with a sample medical question
+test_question = "What are the symptoms of diabetes?"
+
+# Generate response
+inputs = tokenizer.encode(test_question, return_tensors="pt")
+with torch.no_grad():
+    outputs = model.generate(
+        inputs, 
+        max_length=inputs.shape[1] + 100,
+        temperature=0.7,
+        do_sample=True,
+        pad_token_id=tokenizer.eos_token_id,
+        repetition_penalty=1.1,
+        no_repeat_ngram_size=3
+    )
+
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(f"\n❓ Question: {test_question}")
+print(f"🤖 Model Response: {response}")
+print("\n✅ Your model is working! Ready for download.")
+
+
+# ============= CELL 4: DOWNLOAD =============
+# Download the model ZIP file to your computer
+from google.colab import files
+
+print("⬇️ Downloading your trained MedBot model...")
+print("This will download a ZIP file containing all your model files.")
+print("Extract this ZIP and copy the contents to your deployment/models/ folder.")
+
+# Download the ZIP file
+files.download("medbot_trained_model.zip")
+
+print("✅ Download started!")
+print("\n🚀 Next steps after download:")
+print("1. Extract medbot_trained_model.zip")
+print("2. Copy all extracted files to your medbot-deployment/models/ folder")
+print("3. Commit and push to GitHub")
+print("4. Redeploy your app - it will use your trained model!")
+print("\n📝 Commands to run on your local machine:")
+print("cd /home/serah/medbot-deployment")
+print("rm -rf models/*")
+print("# Extract your ZIP and copy files to models/")
+print("git add models/")
+print("git commit -m 'Add trained MedBot model'")
+print("git push origin main")
+print("# Then redeploy on Render")
