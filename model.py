@@ -66,7 +66,11 @@ class MedBotModel:
         self.temperature = 0.7
         self.top_p = 0.9
         
-        # Try to load the model
+        # First, try to load tiny models for speed and efficiency
+        if self._try_load_tiny_model():
+            return
+            
+        # Try to load the model from saved paths
         model_paths = [
             model_path,
             "./models",
@@ -79,8 +83,63 @@ class MedBotModel:
             if path and self._try_load_model(path):
                 break
         else:
-            logger.warning("Could not load fine-tuned model, using fallback")
+            logger.warning("Could not load any model, using rule-based fallback")
             self._setup_fallback()
+    
+    def _try_load_tiny_model(self) -> bool:
+        """Try to load a tiny, efficient model for fast deployment."""
+        tiny_models = [
+            "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  # 1.1B parameters - tiny but capable
+            "microsoft/DialoGPT-small",  # Small conversational model ~117M
+            "distilgpt2",  # ~82M parameters - very lightweight
+            "gpt2"  # ~124M parameters - last resort
+        ]
+        
+        logger.info("Loading tiny model for super fast performance!")
+        
+        for tiny_model in tiny_models:
+            try:
+                logger.info(f"Trying tiny model: {tiny_model}")
+                
+                # Load tokenizer
+                self.tokenizer = AutoTokenizer.from_pretrained(tiny_model)
+                if self.tokenizer.pad_token is None:
+                    self.tokenizer.pad_token = self.tokenizer.eos_token
+                    
+                # Load model with optimizations
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    tiny_model,
+                    torch_dtype=torch.float32,
+                    device_map=None,  # Use CPU
+                    low_cpu_mem_usage=True,  # Memory efficient loading
+                    trust_remote_code=True
+                )
+                
+                # Create optimized pipeline
+                self.pipeline = pipeline(
+                    "text-generation",
+                    model=self.model,
+                    tokenizer=self.tokenizer,
+                    device=-1,  # CPU only for tiny models
+                    batch_size=1
+                )
+                
+                logger.info(f"Tiny model {tiny_model} loaded successfully!")
+                self.model_name = tiny_model
+                
+                # Adjust generation parameters for tiny models
+                self.max_new_tokens = 128  # Shorter responses for speed
+                self.temperature = 0.8
+                self.top_p = 0.85
+                
+                return True
+                
+            except Exception as e:
+                logger.warning(f"Tiny model {tiny_model} failed: {e}")
+                continue
+                
+        logger.info("No tiny models available, falling back to other options")
+        return False
     
     def _try_load_model(self, model_path: str) -> bool:
         """
@@ -96,58 +155,119 @@ class MedBotModel:
             if not os.path.exists(model_path):
                 return False
                 
+            # Check if we have the required files
+            config_path = os.path.join(model_path, "config.json")
+            if not os.path.exists(config_path):
+                return False
+                
             logger.info(f"Attempting to load model from {model_path}")
             
-            # Configure quantization for efficient inference
-            bnb_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_use_double_quant=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_compute_dtype=torch.bfloat16
-            ) if self.device == "cuda" else None
-            
-            # Load tokenizer
-            self.tokenizer = AutoTokenizer.from_pretrained(
-                model_path, 
-                trust_remote_code=True,
-                padding_side="left"
-            )
+            # Load tokenizer first
+            try:
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    model_path,
+                    trust_remote_code=True,
+                    local_files_only=True
+                )
+            except:
+                # Fallback to base model tokenizer
+                base_model = self._detect_base_model(model_path)
+                self.tokenizer = AutoTokenizer.from_pretrained(base_model)
             
             if self.tokenizer.pad_token is None:
                 self.tokenizer.pad_token = self.tokenizer.eos_token
             
-            # Load base model
-            base_model_name = self._detect_base_model(model_path)
-            
+            # Load the actual fine-tuned model directly from your files
             self.model = AutoModelForCausalLM.from_pretrained(
-                base_model_name,
-                quantization_config=bnb_config,
-                device_map="auto" if self.device == "cuda" else None,
+                model_path,
+                local_files_only=True,
                 trust_remote_code=True,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,  # Use half precision on GPU
+                device_map=None  # Let it use CPU
             )
-            
-            # Load LoRA adapter if available
-            adapter_path = os.path.join(model_path, "adapter_model.bin")
-            if os.path.exists(adapter_path):
-                logger.info("Loading LoRA adapter")
-                self.model = PeftModel.from_pretrained(self.model, model_path)
             
             # Create text generation pipeline
             self.pipeline = pipeline(
                 "text-generation",
                 model=self.model,
                 tokenizer=self.tokenizer,
-                device=0 if self.device == "cuda" else -1,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+                device=-1,  # Use CPU
+                torch_dtype=torch.float32
             )
             
-            logger.info("Model loaded successfully")
+            logger.info("Your fine-tuned model loaded successfully!")
             return True
             
         except Exception as e:
-            logger.error(f"Failed to load model from {model_path}: {e}")
-            return False
+            logger.error(f"Failed to load your model from {model_path}: {e}")
+            # Try to load base model as fallback
+            try:
+                base_model = self._detect_base_model(model_path)
+                logger.info(f"Falling back to base model: {base_model}")
+                
+                self.tokenizer = AutoTokenizer.from_pretrained(base_model)
+                if self.tokenizer.pad_token is None:
+                    self.tokenizer.pad_token = self.tokenizer.eos_token
+                    
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    base_model,
+                    torch_dtype=torch.float32,
+                    device_map=None
+                )
+                
+                self.pipeline = pipeline(
+                    "text-generation",
+                    model=self.model,
+                    tokenizer=self.tokenizer,
+                    device=-1
+                )
+                
+                logger.info("Base model loaded as fallback")
+                return True
+                
+            except Exception as e2:
+                logger.error(f"Even base model failed: {e2}")
+# Try tiny models in order of preference
+                tiny_models = [
+                    "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  # Super tiny but capable
+                    "microsoft/DialoGPT-small",  # Small conversational model
+                    "distilgpt2",  # Very lightweight
+                    "gpt2"  # Last resort
+                ]
+                
+                for tiny_model in tiny_models:
+                    try:
+                        logger.info(f"Trying tiny model: {tiny_model}")
+                        
+                        self.tokenizer = AutoTokenizer.from_pretrained(tiny_model)
+                        if self.tokenizer.pad_token is None:
+                            self.tokenizer.pad_token = self.tokenizer.eos_token
+                            
+                        self.model = AutoModelForCausalLM.from_pretrained(
+                            tiny_model,
+                            torch_dtype=torch.float32,
+                            device_map=None,
+                            low_cpu_mem_usage=True
+                        )
+                        
+                        self.pipeline = pipeline(
+                            "text-generation",
+                            model=self.model,
+                            tokenizer=self.tokenizer,
+                            device=-1,  # CPU only for tiny models
+                            batch_size=1
+                        )
+                        
+                        logger.info(f"Tiny model {tiny_model} loaded successfully!")
+                        self.model_name = tiny_model
+                        return True
+                        
+                    except Exception as model_error:
+                        logger.warning(f"Tiny model {tiny_model} failed: {model_error}")
+                        continue
+                        
+                logger.error("All tiny model loading attempts failed")
+                return False
     
     def _detect_base_model(self, model_path: str) -> str:
         """
@@ -342,3 +462,64 @@ Remember, AI assistants should not replace professional medical consultation."""
             response = response[:1000] + "..."
         
         return response
+    
+    @staticmethod
+    def save_model_optimized(model, tokenizer, save_path: str, save_adapter_only: bool = True):
+        """
+        Save model with optimizations for smaller size and faster loading.
+        
+        Args:
+            model: The fine-tuned model to save
+            tokenizer: The tokenizer to save
+            save_path: Directory path to save the model
+            save_adapter_only: If True, only save LoRA adapter weights (much smaller)
+        """
+        import os
+        import torch
+        
+        # Create directory if it doesn't exist
+        os.makedirs(save_path, exist_ok=True)
+        
+        logger.info(f"Saving optimized model to {save_path}")
+        
+        try:
+            if save_adapter_only and hasattr(model, 'save_pretrained'):
+                # For LoRA/PEFT models, save only the adapter weights
+                if hasattr(model, 'peft_config'):
+                    logger.info("Saving LoRA adapter weights only (much smaller)")
+                    model.save_pretrained(
+                        save_path,
+                        torch_dtype=torch.float16,  # Use half precision
+                        safe_serialization=True     # Use safer, smaller format
+                    )
+                else:
+                    # Regular fine-tuned model - save with optimizations
+                    logger.info("Saving full model with optimizations")
+                    model.save_pretrained(
+                        save_path,
+                        torch_dtype=torch.float16,  # Use half precision
+                        safe_serialization=True     # Use safer, smaller format
+                    )
+            else:
+                # Fallback to standard saving
+                model.save_pretrained(save_path)
+            
+            # Save tokenizer
+            tokenizer.save_pretrained(save_path)
+            
+            logger.info("Model saved successfully with optimizations")
+            
+            # Log file sizes for reference
+            total_size = 0
+            for root, dirs, files in os.walk(save_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    size = os.path.getsize(file_path)
+                    total_size += size
+                    logger.info(f"  {file}: {size / (1024*1024):.1f} MB")
+            
+            logger.info(f"Total model size: {total_size / (1024*1024):.1f} MB")
+            
+        except Exception as e:
+            logger.error(f"Failed to save model: {e}")
+            raise

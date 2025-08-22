@@ -1,0 +1,34 @@
+MEDICAL CHATBOT DEPLOYMENT LINKS
+===================================
+
+Primary Deployment URL:
+https://medical-chatbot-l8w5.onrender.com/
+
+Alternative Deployment Options:
+- Render.com (Current): https://medical-chatbot-l8w5.onrender.com/
+- Can be deployed to: Railway, Fly.io, Heroku, Hugging Face Spaces
+
+Health Check Endpoint:
+https://medical-chatbot-l8w5.onrender.com/health
+
+PRESENTATION SLIDES:
+[Please update this with your actual presentation slides link]
+- Google Slides: [ADD YOUR LINK HERE]
+- PowerPoint Online: [ADD YOUR LINK HERE]
+- Canva: [ADD YOUR LINK HERE]
+
+PROJECT STATUS:
+- Model: Lightweight (TinyLlama/DistilGPT-2) with medical knowledge fallback
+- Frontend: Modern React-like HTML/CSS/JS interface
+- Backend: Flask with optimized model loading
+- Deployment: Production-ready with Docker support
+- Performance: Optimized for speed and low resource usage
+
+FEATURES:
+- Real-time medical Q&A interface
+- Fallback knowledge base for common medical conditions
+- Responsive design for all devices
+- Error handling and loading states
+- Medical disclaimers and safety warnings
+
+DEPLOYMENT DATE: 2025-08-22
