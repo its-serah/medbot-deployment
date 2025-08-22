@@ -1,0 +1,82 @@
+[
+  {
+    "input": "What causes chest pain?",
+    "output": "Chest pain can result from various causes. Cardiac causes include heart attack, angina, and pericarditis. Non-cardiac causes include muscle strain, acid reflux, anxiety, pneumonia, and pleurisy. Emergency signs include crushing chest pressure, pain radiating to arm/jaw, shortness of breath, sweating, and nausea. Call 911 immediately for these symptoms. Other chest pain should be evaluated by a healthcare provider for proper diagnosis."
+  },
+  {
+    "input": "I have a fast heartbeat and feel nauseous",
+    "output": "Fast heartbeat with nausea can indicate several conditions. Common causes include anxiety/panic attacks, dehydration, medication side effects, caffeine excess, or low blood sugar. More serious causes include heart rhythm disorders, heart attack (especially in older adults), hyperthyroidism, or electrolyte imbalances. Seek immediate care if you have chest pain, severe shortness of breath, dizziness, heart rate over 150 bpm, or worsening symptoms. Try sitting down, slow deep breathing, and avoid stimulants."
+  },
+  {
+    "input": "What are the symptoms of diabetes?",
+    "output": "Diabetes symptoms include frequent urination, excessive thirst, unexplained weight loss, increased hunger, fatigue, blurred vision, slow-healing wounds, frequent infections, and tingling in hands/feet. Type 1 symptoms develop quickly, while Type 2 symptoms develop gradually. Many people with Type 2 diabetes have no symptoms initially. Risk factors include family history, obesity, age over 45, sedentary lifestyle, and high blood pressure. Early diagnosis and management are crucial to prevent complications."
+  },
+  {
+    "input": "How do I manage high blood pressure?",
+    "output": "High blood pressure management involves lifestyle changes and potentially medications. Lifestyle modifications include reducing sodium intake (less than 2300mg daily), regular exercise (150 minutes weekly), maintaining healthy weight, limiting alcohol, managing stress, and getting adequate sleep. The DASH diet with fruits, vegetables, whole grains, and lean proteins is recommended. Monitor blood pressure regularly, take prescribed medications as directed, and attend regular check-ups. Target is usually below 130/80 mmHg."
+  },
+  {
+    "input": "What should I do for a severe headache?",
+    "output": "For severe headaches, first determine if emergency care is needed. Seek immediate medical attention for sudden severe headache, headache with fever and stiff neck, headache after head injury, headache with vision changes, or worst headache of your life. For non-emergency severe headaches, try rest in a dark quiet room, apply cold or warm compress, stay hydrated, and consider over-the-counter pain relievers if appropriate. Keep a headache diary to identify triggers and patterns."
+  },
+  {
+    "input": "I can't breathe properly",
+    "output": "Breathing difficulties require immediate attention if severe. Call 911 for severe shortness of breath, blue lips/face, chest pain, or inability to speak in full sentences. Common causes include asthma, anxiety, allergic reactions, pneumonia, or heart conditions. For mild breathing issues, try sitting upright, loosening tight clothing, and practicing slow deep breathing. If you have known asthma, use your rescue inhaler. Seek medical evaluation for persistent or worsening breathing problems."
+  },
+  {
+    "input": "What are signs of a heart attack?",
+    "output": "Heart attack signs include chest pain or pressure (often described as crushing or squeezing), pain radiating to arms, jaw, neck, or back, shortness of breath, nausea, vomiting, sweating, dizziness, and fatigue. Women may experience atypical symptoms like jaw pain, back pain, or extreme fatigue without chest pain. Time is critical - call 911 immediately if you suspect a heart attack. Chew aspirin if not allergic while waiting for help. Do not drive yourself to the hospital."
+  },
+  {
+    "input": "How do I treat a fever?",
+    "output": "Fever treatment depends on severity and symptoms. For mild fever (under 102°F), increase fluid intake, rest, and use light clothing. Over-the-counter fever reducers like acetaminophen or ibuprofen can help if comfortable. For higher fevers or concerning symptoms, seek medical care. Call a doctor for fever over 103°F, fever lasting more than 3 days, severe symptoms, difficulty breathing, persistent vomiting, or signs of dehydration. Infants under 3 months with any fever need immediate medical attention."
+  },
+  {
+    "input": "What causes anxiety symptoms?",
+    "output": "Anxiety symptoms result from various factors including genetics, brain chemistry, environmental stress, medical conditions, medications, or substance use. Common triggers include work stress, relationship problems, financial concerns, health issues, or traumatic experiences. Symptoms include excessive worry, restlessness, fatigue, difficulty concentrating, muscle tension, and sleep problems. Treatment options include therapy (particularly cognitive behavioral therapy), relaxation techniques, regular exercise, adequate sleep, and sometimes medications. Professional help is recommended for persistent or severe anxiety."
+  },
+  {
+    "input": "How much exercise should I get?",
+    "output": "Adults should get at least 150 minutes of moderate-intensity aerobic activity weekly, plus muscle-strengthening activities 2 or more days per week. This can be broken down to 30 minutes, 5 days per week. Vigorous activity can be substituted at 75 minutes weekly. Include flexibility and balance exercises, especially for older adults. Start slowly if you're sedentary and gradually increase intensity and duration. Consult your healthcare provider before starting an exercise program if you have health conditions or concerns."
+  },
+  {
+    "input": "What should I eat for better health?",
+    "output": "A healthy diet includes a variety of fruits and vegetables (5+ servings daily), whole grains, lean proteins (fish, poultry, legumes, nuts), and healthy fats (olive oil, avocados, nuts). Limit processed foods, added sugars, and excess sodium. Stay hydrated with 8 glasses of water daily. Consider portion control and eating regular meals. Special dietary needs may apply for conditions like diabetes, heart disease, or allergies. Consult a registered dietitian for personalized nutrition advice tailored to your health needs and goals."
+  },
+  {
+    "input": "I have chronic back pain",
+    "output": "Chronic back pain requires comprehensive management. Common causes include muscle strain, herniated discs, arthritis, or structural problems. Treatment approaches include physical therapy, regular low-impact exercise, proper posture, ergonomic adjustments, stress management, and sometimes medications. Heat/cold therapy, massage, and gentle stretching can provide relief. Maintain a healthy weight and avoid prolonged sitting. Red flag symptoms requiring immediate attention include severe pain after injury, numbness/weakness in legs, or bladder/bowel problems."
+  },
+  {
+    "input": "What are the signs of stroke?",
+    "output": "Remember FAST for stroke signs: Face drooping (ask person to smile), Arms weakness (ask to raise both arms), Speech difficulty (ask to repeat a phrase), Time to call 911. Other signs include sudden confusion, trouble seeing, severe headache, or difficulty walking. Even if symptoms improve, seek immediate medical attention as this could be a mini-stroke (TIA). Quick treatment can minimize brain damage and improve outcomes. Do not drive to the hospital - call 911 for emergency transport."
+  },
+  {
+    "input": "How do I improve my sleep quality?",
+    "output": "Good sleep hygiene includes maintaining a consistent sleep schedule, creating a comfortable sleep environment (cool, dark, quiet), avoiding screens 1 hour before bed, limiting caffeine after 2 PM, and avoiding large meals before bedtime. Establish a relaxing bedtime routine like reading or gentle stretching. Regular daytime exercise helps but avoid vigorous activity close to bedtime. If sleep problems persist despite good sleep hygiene, consult a healthcare provider to rule out sleep disorders like sleep apnea."
+  },
+  {
+    "input": "What causes dizziness?",
+    "output": "Dizziness has many causes including inner ear problems (vertigo), low blood pressure, dehydration, medication side effects, anxiety, low blood sugar, or heart conditions. Benign positional vertigo is common and causes spinning sensations with head movements. Stay hydrated, move slowly when changing positions, and sit down if dizzy. Seek immediate care for dizziness with chest pain, severe headache, high fever, neck stiffness, or fainting. Persistent dizziness should be evaluated by a healthcare provider."
+  },
+  {
+    "input": "I'm having panic attacks",
+    "output": "Panic attacks involve sudden intense fear with physical symptoms like rapid heartbeat, sweating, trembling, shortness of breath, and chest pain. During an attack, try deep breathing exercises, focus on grounding techniques (5 things you see, 4 you hear, 3 you touch), and remind yourself it will pass. Regular exercise, adequate sleep, limiting caffeine, and stress management help prevent attacks. Cognitive behavioral therapy is highly effective. If panic attacks interfere with daily life, seek professional help for proper diagnosis and treatment options."
+  },
+  {
+    "input": "What are kidney stone symptoms?",
+    "output": "Kidney stone symptoms include severe flank pain that may radiate to the groin, nausea, vomiting, frequent urination, burning during urination, pink/red/brown urine, and fever if infection is present. Pain often comes in waves and can be excruciating. Small stones may pass without symptoms. Drink plenty of water to help flush stones. Seek immediate medical care for severe pain, fever, persistent nausea/vomiting, or inability to urinate. Large stones may require medical intervention to remove or break up."
+  },
+  {
+    "input": "How do I manage stress effectively?",
+    "output": "Effective stress management includes identifying stress triggers, practicing relaxation techniques (deep breathing, meditation, progressive muscle relaxation), regular physical exercise, maintaining social connections, and ensuring adequate sleep. Time management, setting realistic goals, and saying no to excessive commitments help. Consider stress-reducing activities like hobbies, nature walks, or listening to music. If stress feels overwhelming or affects your daily functioning, consider counseling or therapy. Chronic stress can impact physical health, so addressing it is important for overall well-being."
+  },
+  {
+    "input": "What should I know about depression?",
+    "output": "Depression involves persistent sadness, loss of interest in activities, changes in sleep and appetite, fatigue, difficulty concentrating, feelings of worthlessness, and sometimes thoughts of death. It's a medical condition, not a character flaw or something you can simply 'snap out of.' Risk factors include genetics, brain chemistry, life events, and medical conditions. Treatment is highly effective and may include therapy, medications, lifestyle changes, and social support. If you have thoughts of self-harm, seek immediate help by calling 988 (Suicide & Crisis Lifeline) or going to an emergency room."
+  },
+  {
+    "input": "I have persistent cough",
+    "output": "Persistent cough lasting over 3 weeks needs medical evaluation. Common causes include post-nasal drip, asthma, acid reflux, infections, or medications (like ACE inhibitors). Acute cough is often viral and resolves in 1-2 weeks. For symptom relief, try honey for dry cough, stay hydrated, use a humidifier, and avoid irritants like smoke. Seek immediate care for cough with blood, high fever, severe shortness of breath, or chest pain. Chronic cough may require specific testing to determine the underlying cause and appropriate treatment."
+  }
+]

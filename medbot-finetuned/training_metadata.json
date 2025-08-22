@@ -1,0 +1,7 @@
+{
+  "base_model": "gpt2",
+  "training_data": "medical_training_data.json",
+  "num_examples": 20,
+  "max_length": 512,
+  "training_completed": "2025-08-22T19:23:03.841576"
+}

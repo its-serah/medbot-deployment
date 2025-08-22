@@ -1,37 +1,65 @@
-// MedBot JavaScript
+// MedBot Advanced JavaScript
 class MedBot {
     constructor() {
-        this.chatMessages = document.getElementById('chatMessages');
-        this.questionForm = document.getElementById('questionForm');
-        this.questionInput = document.getElementById('questionInput');
-        this.sendButton = document.getElementById('sendButton');
+        this.messagesContainer = document.getElementById('messagesContainer');
+        this.messageForm = document.getElementById('messageForm');
+        this.messageInput = document.getElementById('messageInput');
+        this.sendBtn = document.getElementById('sendBtn');
         this.charCount = document.getElementById('charCount');
         this.loadingOverlay = document.getElementById('loadingOverlay');
-        this.errorModal = document.getElementById('errorModal');
+        this.errorToast = document.getElementById('errorToast');
         this.errorMessage = document.getElementById('errorMessage');
+        this.thinkingStatus = document.getElementById('thinkingStatus');
+        
+        this.isTyping = false;
+        this.thinkingMessages = [
+            'Analyzing medical data...',
+            'Consulting knowledge base...',
+            'Processing your question...',
+            'Generating AI response...',
+            'Validating medical information...'
+        ];
+        
+        this.currentThinkingIndex = 0;
+        this.thinkingInterval = null;
         
         this.init();
     }
     
     init() {
         // Event listeners
-        this.questionForm.addEventListener('submit', this.handleSubmit.bind(this));
-        this.questionInput.addEventListener('input', this.handleInputChange.bind(this));
-        this.questionInput.addEventListener('keydown', this.handleKeyDown.bind(this));
-        
-        // Auto-resize textarea
-        this.questionInput.addEventListener('input', this.autoResize.bind(this));
+        this.messageForm.addEventListener('submit', this.handleSubmit.bind(this));
+        this.messageInput.addEventListener('input', this.handleInputChange.bind(this));
+        this.messageInput.addEventListener('keydown', this.handleKeyDown.bind(this));
         
         // Focus on input
-        this.questionInput.focus();
+        this.messageInput.focus();
         
-        console.log('MedBot initialized');
+        // Add welcome animation
+        this.animateWelcome();
+        
+        console.log('🤖 MedBot AI initialized');
+    }
+    
+    animateWelcome() {
+        const quickBtns = document.querySelectorAll('.quick-btn');
+        quickBtns.forEach((btn, index) => {
+            btn.style.opacity = '0';
+            btn.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                btn.style.transition = 'all 0.4s ease-out';
+                btn.style.opacity = '1';
+                btn.style.transform = 'translateY(0)';
+            }, index * 100 + 600);
+        });
     }
     
     handleSubmit(e) {
         e.preventDefault();
         
-        const question = this.questionInput.value.trim();
+        if (this.isTyping) return;
+        
+        const question = this.messageInput.value.trim();
         if (!question) {
             this.showError('Please enter a medical question.');
             return;
@@ -46,46 +74,50 @@ class MedBot {
     }
     
     handleInputChange() {
-        const length = this.questionInput.value.length;
+        const length = this.messageInput.value.length;
         this.charCount.textContent = length;
         
-        // Update character counter color
+        const charCounter = document.querySelector('.char-counter');
         if (length > 900) {
-            this.charCount.style.color = 'var(--danger-color)';
+            charCounter.style.color = '#E63946';
         } else if (length > 700) {
-            this.charCount.style.color = 'var(--warning-color)';
+            charCounter.style.color = '#FF9500';
         } else {
-            this.charCount.style.color = 'var(--text-secondary)';
+            charCounter.style.color = '#64748B';
         }
         
-        // Update send button state
-        this.sendButton.disabled = !this.questionInput.value.trim();
+        this.sendBtn.disabled = !this.messageInput.value.trim() || this.isTyping;
+        this.autoResize();
     }
     
     handleKeyDown(e) {
-        // Send on Ctrl/Cmd + Enter
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             e.preventDefault();
-            this.questionForm.dispatchEvent(new Event('submit'));
+            this.handleSubmit(e);
         }
     }
     
     autoResize() {
-        const textarea = this.questionInput;
+        const textarea = this.messageInput;
         textarea.style.height = 'auto';
         textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
     }
     
     async askQuestion(question) {
-        // Add user message
-        this.addMessage(question, 'user');
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.style.transition = 'all 0.3s ease-out';
+            welcomeMessage.style.opacity = '0';
+            welcomeMessage.style.transform = 'translateY(-20px)';
+            setTimeout(() => welcomeMessage.remove(), 300);
+        }
         
-        // Clear input
-        this.questionInput.value = '';
+        await this.addMessage(question, 'user');
+        
+        this.messageInput.value = '';
         this.charCount.textContent = '0';
         this.handleInputChange();
         
-        // Show loading
         this.showLoading(true);
         
         try {
@@ -100,114 +132,240 @@ class MedBot {
             const data = await response.json();
             
             if (!response.ok) {
-                throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                throw new Error(data.error || 'HTTP error! status: ' + response.status);
             }
             
-            // Add bot response
-            this.addMessage(data.response, 'bot');
+            await this.addMessage(data.response, 'bot', true);
             
         } catch (error) {
             console.error('Error asking question:', error);
-            this.showError(error.message || 'Failed to get response from MedBot. Please try again.');
+            this.showError(error.message || 'Failed to get response from MedBot.');
             
-            // Add error message to chat
-            this.addMessage(
-                'I apologize, but I encountered an error while processing your question. Please try again later or consult a healthcare professional for medical advice.',
+            await this.addMessage(
+                'I apologize, but I encountered an error. Please try again later or consult a healthcare professional.',
                 'bot'
             );
             
         } finally {
             this.showLoading(false);
-            this.questionInput.focus();
+            this.messageInput.focus();
         }
     }
     
-    addMessage(content, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-        
-        const avatar = document.createElement('div');
-        avatar.className = 'message-avatar';
-        avatar.innerHTML = type === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
-        
-        const messageContent = document.createElement('div');
-        messageContent.className = 'message-content';
-        
-        // Format content with paragraphs
-        const paragraphs = content.split('\n').filter(p => p.trim());
-        paragraphs.forEach(paragraph => {
-            const p = document.createElement('p');
-            p.textContent = paragraph;
-            messageContent.appendChild(p);
+    async addMessage(content, type, animate = false) {
+        return new Promise((resolve) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-bubble ' + type;
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(20px)';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            if (type === 'user') {
+                avatar.innerHTML = '<i class="fas fa-user"></i>';
+            } else {
+                avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            }
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            
+            this.messagesContainer.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.style.transition = 'all 0.4s ease-out';
+                messageDiv.style.opacity = '1';
+                messageDiv.style.transform = 'translateY(0)';
+            }, 50);
+            
+            if (animate && type === 'bot') {
+                this.typeMessage(content, messageContent, resolve);
+            } else {
+                this.displayMessage(content, messageContent);
+                setTimeout(resolve, 400);
+            }
+            
+            this.scrollToBottom();
         });
+    }
+    
+    displayMessage(content, container) {
+        const formattedContent = this.formatContent(content);
+        container.innerHTML = formattedContent;
+    }
+    
+    async typeMessage(content, container, callback) {
+        const formattedContent = this.formatContent(content);
         
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(messageContent);
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing-indicator';
+        typingDiv.innerHTML = '<span>MedBot is typing</span><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+        container.appendChild(typingDiv);
         
-        this.chatMessages.appendChild(messageDiv);
+        await this.delay(1000);
         
-        // Scroll to bottom
-        this.scrollToBottom();
+        typingDiv.remove();
+        container.innerHTML = formattedContent;
+        
+        container.style.opacity = '0';
+        setTimeout(() => {
+            container.style.transition = 'opacity 0.5s ease-out';
+            container.style.opacity = '1';
+        }, 50);
+        
+        callback();
+    }
+    
+    formatContent(content) {
+        let formatted = content
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>');
+        
+        formatted = '<p>' + formatted + '</p>';
+        
+        formatted = formatted.replace(
+            /(⚕️.*?Medical Disclaimer.*?treatment\.)/gi,
+            '<div class="medical-disclaimer">$1</div>'
+        );
+        
+        return formatted;
     }
     
     scrollToBottom() {
         setTimeout(() => {
-            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
         }, 100);
     }
     
     showLoading(show) {
-        this.loadingOverlay.style.display = show ? 'flex' : 'none';
-        this.sendButton.disabled = show;
+        this.isTyping = show;
         
         if (show) {
-            document.body.style.overflow = 'hidden';
+            this.loadingOverlay.classList.remove('hidden');
+            this.sendBtn.disabled = true;
+            this.startThinkingAnimation();
         } else {
-            document.body.style.overflow = '';
+            this.loadingOverlay.classList.add('hidden');
+            this.sendBtn.disabled = false;
+            this.stopThinkingAnimation();
+        }
+    }
+    
+    startThinkingAnimation() {
+        this.currentThinkingIndex = 0;
+        this.updateThinkingStatus();
+        
+        this.thinkingInterval = setInterval(() => {
+            this.currentThinkingIndex = (this.currentThinkingIndex + 1) % this.thinkingMessages.length;
+            this.updateThinkingStatus();
+        }, 2000);
+    }
+    
+    stopThinkingAnimation() {
+        if (this.thinkingInterval) {
+            clearInterval(this.thinkingInterval);
+            this.thinkingInterval = null;
+        }
+    }
+    
+    updateThinkingStatus() {
+        if (this.thinkingStatus) {
+            this.thinkingStatus.style.opacity = '0';
+            setTimeout(() => {
+                this.thinkingStatus.textContent = this.thinkingMessages[this.currentThinkingIndex];
+                this.thinkingStatus.style.opacity = '1';
+            }, 200);
         }
     }
     
     showError(message) {
         this.errorMessage.textContent = message;
-        this.errorModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        this.errorToast.classList.remove('hidden');
+        
+        setTimeout(() => {
+            this.closeErrorToast();
+        }, 5000);
+        
+        this.errorToast.style.animation = 'shake 0.5s ease-out';
+        setTimeout(() => {
+            this.errorToast.style.animation = '';
+        }, 500);
     }
     
-    closeErrorModal() {
-        this.errorModal.style.display = 'none';
-        document.body.style.overflow = '';
-        this.questionInput.focus();
+    closeErrorToast() {
+        this.errorToast.classList.add('hidden');
+        this.messageInput.focus();
+    }
+    
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 
-// Global function for modal close (called from HTML)
-function closeErrorModal() {
+// Quick question function for buttons
+function askQuickQuestion(question) {
     if (window.medBot) {
-        window.medBot.closeErrorModal();
+        window.medBot.messageInput.value = question;
+        window.medBot.handleInputChange();
+        window.medBot.messageInput.focus();
+        
+        setTimeout(() => {
+            window.medBot.handleSubmit(new Event('submit'));
+        }, 500);
+    }
+}
+
+// Global function for error toast close
+function closeErrorToast() {
+    if (window.medBot) {
+        window.medBot.closeErrorToast();
     }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.medBot = new MedBot();
+    
+    // Add CSS for additional animations
+    const style = document.createElement('style');
+    style.textContent = `
+        .medical-disclaimer {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+            border-left: 4px solid #E63946;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #334155;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .message-bubble {
+            animation: messageSlideIn 0.4s ease-out;
+        }
+        
+        @keyframes messageSlideIn {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 });
 
-// Handle page visibility changes
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && window.medBot) {
-        window.medBot.questionInput.focus();
-    }
-});
-
-// Service worker registration for PWA (optional)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
+console.log('🚀 MedBot Advanced Interface Ready!');

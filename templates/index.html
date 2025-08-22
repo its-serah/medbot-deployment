@@ -5,93 +5,144 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MedBot - AI Medical Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="hero-header">
             <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-stethoscope"></i>
-                    <h1>MedBot</h1>
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i class="fas fa-stethoscope"></i>
+                        <div class="pulse-ring"></div>
+                    </div>
+                    <div class="logo-text">
+                        <h1 class="gradient-text">MedBot</h1>
+                        <p class="tagline">AI-Powered Medical Intelligence</p>
+                    </div>
                 </div>
-                <p class="subtitle">AI-Powered Medical Assistant</p>
+                
+                <!-- Status & Stats -->
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-indicator">
+                            <div class="status-dot online"></div>
+                            <span>AI Online</span>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-brain"></i>
+                        <span>Neural Ready</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>HIPAA Compliant</span>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- Chat Container -->
-        <div class="chat-container">
-            <div class="chat-header">
-                <div class="status-indicator">
-                    <span class="status-dot online"></span>
-                    <span>MedBot is online</span>
+        <!-- Chat Interface -->
+        <main class="chat-interface">
+            <div class="chat-container">
+                <!-- Messages Area -->
+                <div class="messages-container" id="messagesContainer">
+                    <div class="welcome-message">
+                        <div class="bot-avatar">
+                            <i class="fas fa-robot"></i>
+                            <div class="avatar-glow"></div>
+                        </div>
+                        <div class="welcome-content">
+                            <h3>👋 Welcome to MedBot</h3>
+                            <p>I'm your AI medical assistant, powered by advanced language models. I can help you understand health conditions, symptoms, treatments, and general medical information.</p>
+                            <div class="quick-actions">
+                                <button class="quick-btn" onclick="askQuickQuestion('What are the symptoms of diabetes?')">🩺 Diabetes Info</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('How to manage high blood pressure?')">❤️ Heart Health</button>
+                                <button class="quick-btn" onclick="askQuickQuestion('What causes headaches?')">🧠 Headaches</button>
+                            </div>
+                            <div class="disclaimer-card">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p><strong>Medical Disclaimer:</strong> This AI provides educational information only. For diagnosis, treatment, or medical emergencies, always consult qualified healthcare professionals.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Section -->
+                <div class="input-section">
+                    <form class="message-form" id="messageForm">
+                        <div class="input-container">
+                            <div class="input-wrapper">
+                                <textarea 
+                                    id="messageInput" 
+                                    placeholder="Describe your symptoms or ask a medical question..."
+                                    rows="1"
+                                    maxlength="1000"
+                                    class="message-input"
+                                ></textarea>
+                                <button type="submit" class="send-btn" id="sendBtn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <div class="btn-glow"></div>
+                                </button>
+                            </div>
+                            <div class="input-meta">
+                                <div class="char-counter">
+                                    <span id="charCount">0</span>/1000
+                                </div>
+                                <div class="ai-indicator">
+                                    <i class="fas fa-brain"></i>
+                                    <span>AI Processing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Chat Messages -->
-            <div class="chat-messages" id="chatMessages">
-                <div class="message bot-message">
-                    <div class="message-avatar">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="message-content">
-                        <p>Hello! I'm MedBot, your AI medical assistant. I can help answer general medical questions and provide health information.</p>
-                        <p><strong>⚠️ Important Disclaimer:</strong> I am not a substitute for professional medical advice. Always consult with qualified healthcare professionals for medical diagnosis and treatment.</p>
-                    </div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="ai-thinking">
+                <div class="thinking-brain">
+                    <i class="fas fa-brain"></i>
+                    <div class="brain-pulse"></div>
+                </div>
+                <div class="thinking-text">
+                    <h3>AI Analyzing...</h3>
+                    <p class="thinking-status" id="thinkingStatus">Processing your medical question</p>
                 </div>
             </div>
-
-            <!-- Input Area -->
-            <div class="input-area">
-                <form class="input-form" id="questionForm">
-                    <div class="input-group">
-                        <textarea 
-                            id="questionInput" 
-                            placeholder="Ask me a medical question..." 
-                            rows="1"
-                            maxlength="1000"
-                        ></textarea>
-                        <button type="submit" id="sendButton" class="send-button">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="input-footer">
-                        <small class="char-counter">
-                            <span id="charCount">0</span>/1000 characters
-                        </small>
-                        <small class="disclaimer">
-                            For medical emergencies, call emergency services immediately
-                        </small>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Loading Indicator -->
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="loading-spinner">
-                <div class="spinner"></div>
-                <p>MedBot is thinking...</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
             </div>
         </div>
     </div>
 
-    <!-- Error Modal -->
-    <div class="modal" id="errorModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-exclamation-triangle"></i> Error</h3>
-                <button class="modal-close" onclick="closeErrorModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="errorMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button onclick="closeErrorModal()" class="btn btn-primary">OK</button>
-            </div>
-        </div>
+    <!-- Error Toast -->
+    <div class="toast error-toast hidden" id="errorToast">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorMessage"></span>
+        <button class="toast-close" onclick="closeErrorToast()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
