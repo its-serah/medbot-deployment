@@ -11,6 +11,10 @@ A production-ready medical AI assistant powered by a **custom fine-tuned GPT-2 m
 
 **[Try MedBot Live](https://medbot-deployment.onrender.com)** - *Deployed on Render with auto-scaling*
 
+**[Portfolio Site](https://its-serah.github.io/medbot-deployment)** - *GitHub Pages deployment showcasing AI expertise*
+
+**[GitHub Repository](https://github.com/its-serah/medbot-deployment)** - *Source code with enhanced UI*
+
 ## Table of Contents
 
 - [Key Features](#key-features)
@@ -39,6 +43,17 @@ A production-ready medical AI assistant powered by a **custom fine-tuned GPT-2 m
 - **Character counting** and input validation
 - **Loading animations** and error handling
 - **Accessibility features** with proper ARIA labels
+
+### Enhanced UI Features (Latest Update)
+- **Custom Mouse Cursors** with bow effects for interactive elements
+  - Purple-themed cursors for portfolio sections
+  - Medical cross cursors for MedBot interface
+- **Advanced Animations** including floating icons, staggered animations, parallax effects
+- **Mobile-First Responsive Design** with comprehensive breakpoints (576px, 768px, 992px, 1200px, 1400px)
+- **Micro-Interactions** with enhanced hover states and smooth transitions
+- **Message Bubbles** for chat interface with typing indicators
+- **Accessibility Improvements** including focus states, reduced motion support, high contrast mode
+- **Portfolio Integration** showcasing AI expertise alongside the medical assistant
 
 ### Production Security
 - **Medical disclaimers** on all responses
