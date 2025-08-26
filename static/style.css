@@ -5,6 +5,25 @@
     box-sizing: border-box;
 }
 
+/* Custom Medical Cursor Styles */
+* {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="6" fill="%2300B4D8" opacity="0.7"/><circle cx="14" cy="14" r="2" fill="%23ffffff"/><path d="M14 6 L14 22 M6 14 L22 14" stroke="%2300C896" stroke-width="1.5" opacity="0.8"/></svg>'), auto;
+}
+
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="%2300B4D8" opacity="0.6"/><circle cx="12" cy="12" r="1" fill="%23ffffff"/></svg>'), auto;
+}
+
+/* Medical Bow Effect on Interactive Elements */
+a, button, .clickable, input, textarea {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="8" fill="%2300B4D8" opacity="0.3"/><circle cx="18" cy="18" r="4" fill="%2300B4D8" opacity="0.8"/><circle cx="18" cy="18" r="1" fill="%23ffffff"/><path d="M18 8 L18 28 M8 18 L28 18" stroke="%2300C896" stroke-width="2" opacity="0.7"/><circle cx="18" cy="18" r="12" stroke="%2300B4D8" stroke-width="1" fill="none" opacity="0.4"/></svg>'), pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a:hover, button:hover, .clickable:hover {
+    transform: scale(1.02) translateY(-1px);
+}
+
 :root {
     /* Medical Theme Colors */
     --primary-blue: #0066CC;
@@ -881,6 +900,138 @@ body {
     }
 }
 
+/* ===== MESSAGE BUBBLES ===== */
+.message-bubble {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease-out;
+}
+
+.message-bubble.user {
+    flex-direction: row-reverse;
+}
+
+.message-bubble .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-soft);
+}
+
+.message-bubble.user .avatar {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.message-bubble.bot .avatar {
+    background: var(--gradient-neural);
+    color: white;
+}
+
+.message-content {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0, 180, 216, 0.1);
+    position: relative;
+}
+
+.message-bubble.user .message-content {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: rgba(0, 102, 204, 0.3);
+}
+
+.message-bubble.bot .message-content {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--charcoal);
+    border-color: rgba(0, 180, 216, 0.2);
+}
+
+.message-content p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.message-content p + p {
+    margin-top: 1rem;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--dark-gray);
+    font-style: italic;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.typing-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--primary-teal);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Medical Disclaimer Styling */
+.medical-disclaimer {
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+    border-left: 4px solid var(--medical-red);
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--charcoal);
+}
+
+/* Enhanced Hover Effects */
+.quick-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 196, 150, 0.3);
+}
+
+.status-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.contact-form button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
+}
+
 /* ===== UTILITY CLASSES ===== */
 .hidden {
     display: none !important;
@@ -893,4 +1044,21 @@ body {
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
+}
+
+/* Smooth transitions for all interactive elements */
+.clickable,
+.quick-btn,
+.status-item,
+.send-btn,
+input,
+textarea {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced focus states */
+input:focus,
+textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(0, 180, 216, 0.2);
 }
