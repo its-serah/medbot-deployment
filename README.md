@@ -9,11 +9,8 @@ A production-ready medical AI assistant powered by a **custom fine-tuned GPT-2 m
 
 ## Live Demo
 
-**[Try MedBot Live](https://medbot-deployment.onrender.com)** - *Deployed on Render with auto-scaling*
+**[Try MedBot Live]((https://medical-chatbot-l8w5.onrender.com/))** - *Deployed on Render with auto-scaling*
 
-**[Portfolio Site](https://its-serah.github.io/medbot-deployment)** - *GitHub Pages deployment showcasing AI expertise*
-
-**[GitHub Repository](https://github.com/its-serah/medbot-deployment)** - *Source code with enhanced UI*
 
 ## Table of Contents
 
