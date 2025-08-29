@@ -9,7 +9,7 @@ A production-ready medical AI assistant powered by a **custom fine-tuned GPT-2 m
 
 ## Live Demo
 
-**[Try MedBot Live]([https://medical-chatbot-l8w5.onrender.com/])** - *Deployed on Render with auto-scaling*
+**[Try MedBot Live]** - *Deployed on Render with auto-scaling* https://medical-chatbot-l8w5.onrender.com/ 
 
 <img width="1700" height="1047" alt="Screenshot from 2025-08-29 08-30-13" src="https://github.com/user-attachments/assets/bda1602b-176a-45ba-baf6-de8faccc88e7" />
 
